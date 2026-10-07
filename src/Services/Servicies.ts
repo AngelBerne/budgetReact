@@ -2,12 +2,18 @@ import { settings } from "../api";
 
 import { Transaction } from "../Models/DataTransactions";
 
-type TKEY_SERVICES = "transactions" | "CATEGORIES" | "Date" | "SUBCATEGORIES";
+type TKEY_SERVICES =
+  | "transactions"
+  | "CATEGORIES"
+  | "Date"
+  | "SUBCATEGORIES"
+  | "summary";
 
 export const KEY_SERVICES: { [key: string]: TKEY_SERVICES } = {
   TRANSACIONS: "transactions",
   CATEGORIES: "CATEGORIES",
   SUBCATEGORIES: "SUBCATEGORIES",
+  SUMMARY: "summary",
   DATE: "Date",
 };
 
@@ -68,6 +74,36 @@ export class ServiciesLocalTransactions implements IServiciesDB {
     db.handleBackup(data);
     return new Promise((resolve) => {
       resolve();
+    });
+  }
+}
+
+export class SummaryData {
+  static saveData(data: any) {
+    if (!data) return;
+    delete data.databyCatefory;
+    delete data.monthlyBank;
+    delete data.monthlyCrypto;
+    delete data.monthlyMortgage;
+    delete data.monthlyStocks;
+    delete data.totalCheckingAccount;
+    delete data.totalExpenses;
+    delete data.totalIncome;
+
+    console.log("SummaryData.saveData--->", data);
+    const payload = {
+      sheetName: KEY_SERVICES.SUMMARY,
+      data: {
+        data: JSON.stringify(data),
+      },
+    };
+
+    fetch(settings.url, {
+      method: "POST",
+
+      body: JSON.stringify(payload),
+    }).then((a) => {
+      console.error("data --->>", a);
     });
   }
 }

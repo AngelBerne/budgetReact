@@ -202,7 +202,7 @@ const TransationsDetailsView = () => {
                 const data = subcategoriesData.find((sc) => sc.title === subCate.title) || new SubCategory({id: null, title: subCate.title, icon: "", color: "", category: []}) 
   
 
-                return(<SubCategortCardForList sc={data} editSubCategory={() => updateSubCategories(subCate.title.toLowerCase())} size="M" showColor={subcategory.includes(subCate.title.toLowerCase())}  />)
+                return(<SubCategortCardForList key={subCate.id} sc={data} editSubCategory={() => updateSubCategories(subCate.title.toLowerCase())} size="M" showColor={subcategory.includes(subCate.title.toLowerCase())}  />)
 
                
               })}

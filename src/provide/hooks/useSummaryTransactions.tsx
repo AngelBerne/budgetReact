@@ -42,7 +42,7 @@ export interface ISummaryHomeData {
   databyCatefory: Record<Category, number>;
 }
 
-type MonthlySummary = Record<string, ISummaryHomeData>;
+export type MonthlySummary = Record<string, ISummaryHomeData>;
 
 // ─────────────────────────────────────────
 // HOOK

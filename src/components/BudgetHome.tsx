@@ -233,9 +233,9 @@ const BillsRemaings = ({onClick}: {onClick?: () => void}) => {
 
   const otherTransactionToTrack = subcategoriesData.filter(st => st.title == "send money")
 
-  
+  if (transactionsData.length < 0)return <>No Nada</>
 
-    const billsTransitions = transactionsData.filter((f) => {
+    const billsTransitions = transactionsData?.filter((f) => {
       const [year, month] = String(f.date).split("-").map(Number);
 
       const validationByMonth =   year  === Number(curentDate.year) &&

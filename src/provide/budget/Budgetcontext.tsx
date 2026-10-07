@@ -9,7 +9,7 @@ import {
   type ReactElement,
 } from "react";
 import { BudgetContext } from "./data";
-import {        GoogleSheetsServiciesTransactions } from "../../Services/Servicies";
+import {        GoogleSheetsServiciesTransactions, SummaryData } from "../../Services/Servicies";
 import { Transaction } from "../../Models/DataTransactions";
 
 import { useSummary, type ISummaryHomeData } from "../hooks/useSummaryTransactions";
@@ -59,6 +59,7 @@ export interface IBudgetContext {
   lastMonth: string
   allMonthsDataSort: Record<string, ISummaryHomeData>
   acumulateMonth: Record<string, ISummaryHomeData>
+  getDataMonthToShow: (data?: ISummaryHomeData) => any
 }
 
 
@@ -138,8 +139,38 @@ export const BudgetContextProvider = ({ children }: { children: ReactElement }) 
       return global?.totalCardRed >= cuantity
     }
 
-   
   }
+   const getDataMonthToShow = (data?: ISummaryHomeData) => {
+
+    if (!data) return;
+   
+    const {
+    totalBalance,
+    totalCardRed,
+    totalCardBlue,
+    savingsMortgage,
+    savingsBank,
+    savingsStocks,
+      savingsCrypto,
+    totalCash,
+    } = data;
+  
+ 
+
+  return {
+    Savings: [{ name: "Balance", value: totalBalance } ,{ name: "Cash", value: totalCash }],
+    ["Credits Cards"]: [
+      { name: "Red Card", value: totalCardRed },
+      { name: "Blue Card", value: totalCardBlue },
+    ],
+    ["Savings & Investments"]: [
+      { name: "Savings", value: savingsBank },
+      { name: "Mortgage", value: savingsMortgage },
+      { name: "Stocks", value: savingsStocks },
+      { name: "Crypto", value: savingsCrypto },
+    ],
+  };
+  };
 
    const changeMountToShow = (action: "<" | ">") => {
     if (action === "<") {
@@ -169,14 +200,24 @@ export const BudgetContextProvider = ({ children }: { children: ReactElement }) 
        setIsLoading(false)
        setTransactionsData(data)
       
+      
     
     })
    
-    
-
- 
-   
   }, [])
+
+
+  useEffect(() => { 
+
+    const dataMonth = getDataMonthToShow(acumulateMonth[lastMonth]) || {}
+ 
+    
+    if (Object.keys(dataMonth).length > 0) {
+     SummaryData.saveData(acumulateMonth[lastMonth])
+    }
+      //SummaryData
+      
+  },[transactionsData,acumulateMonth,lastMonth])
 
 
   const saveStocksProfit = (cuantity: number) => {
@@ -215,15 +256,26 @@ export const BudgetContextProvider = ({ children }: { children: ReactElement }) 
     setIsLoading(true)
     const newTransactions = [...transactionsData, ...data]
     setTransactionsData(newTransactions)
- 
+   setIsLoading(false)
     dataBase.handleBackup(newTransactions).then(() => {
-       setIsLoading(false)
+     
       if (action) {
         action()
       }
     })
     
   }
+
+    useEffect(() => { 
+
+
+ 
+    
+      // console.log('transactionsData', acumulateMonth[lastMonth]);
+      SummaryData.saveData(acumulateMonth[lastMonth])
+      
+      
+  },[transactionsData])
 
   const saveNewTransaction = (data: Transaction, action?: () => void) => {
     const newData = new Transaction(data)
@@ -281,6 +333,15 @@ export const BudgetContextProvider = ({ children }: { children: ReactElement }) 
     nameMonth: nameMonth,
     month: month - 1,
   }
+
+
+ 
+
+
+
+
+
+
   const values = {
     title: "this is a test",
 
@@ -303,8 +364,8 @@ export const BudgetContextProvider = ({ children }: { children: ReactElement }) 
     udateLocalDataBase,
     validateSavingsAccountBalance,
     subcategoriesData, saveSubCategories, getSubCategoryFor, stocksProfit, saveStocksProfit,
-    validateCryptoFound,validateStockFound,validateCashFound
-    
+    validateCryptoFound,validateStockFound,validateCashFound,
+    getDataMonthToShow
 
   }
 

@@ -13,7 +13,7 @@ import ShowBarData from "./ShowBarData";
 
 const ShowGrap = () => {
   // const location = useLocation();
-  const { curentDate, allMonthsData , lastMonth , acumulateMonth  ,global, stocksProfit } = useBudgetContext();
+  const { curentDate, allMonthsData , lastMonth , acumulateMonth  ,global, stocksProfit ,getDataMonthToShow } = useBudgetContext();
   const [monthToShowString, setMonthToShowString] = useState<string>(lastMonth);
 
  
@@ -29,7 +29,7 @@ const searchDataMonth = (search: "Current" | "Last") => {
 
  
   if (isCurrentMonth && prebData.includes(monthToShowString))  {
-    return  setDataMonthToShow(acumulateMonth[monthToShowString])
+    return  getDataMonthToShow(acumulateMonth[monthToShowString])
   }
 
   
@@ -37,14 +37,14 @@ const searchDataMonth = (search: "Current" | "Last") => {
   if (isCurrentMonth && !prebData.includes(monthToShowString)) {
    
     const data = acumulateMonth[prebData[prebData.length - 1]]
-    return setDataMonthToShow(data)
+    return getDataMonthToShow(data)
   }
 
   if (!isCurrentMonth ) {
     const indexLastMonth = prebData.indexOf(monthToShowString);
     const dataLastMonth = prebData[indexLastMonth - 1];    
     if (!dataLastMonth) return emptyData()
-    return setDataMonthToShow(acumulateMonth[dataLastMonth])
+    return getDataMonthToShow(acumulateMonth[dataLastMonth])
    
   }
 
@@ -61,7 +61,7 @@ const searchDataMonth = (search: "Current" | "Last") => {
   const moreData = [{category: 'ForStocksProfit', cuantity: stocksProfit} ,{category: 'Balance', cuantity: global.totalBalance},{category: 'Cash', cuantity: global.totalCash}]
   const dataToShow = [...moreData, ...globalData]
   
-  // console.log(dataCurrentMonth)
+  console.log(dataCurrentMonth)
 
   const totalAvailable = dataToShow.reduce((acc, item) => acc + item.cuantity, 0);
   return(
@@ -150,37 +150,6 @@ const RowDataShow = ({title ,data}: {title: string , data: {name: string, value:
     </div>
   )
 }
-const setDataMonthToShow = (data?: ISummaryHomeData) => {
-
-  if (!data) return emptyData()
-   
-    const {
-    totalBalance,
-    totalCardRed,
-    totalCardBlue,
-    savingsMortgage,
-    savingsBank,
-    savingsStocks,
-      savingsCrypto,
-    totalCash,
-    } = data;
-  
- 
-
-  return {
-    Savings: [{ name: "Balance", value: totalBalance } ,{ name: "Cash", value: totalCash }],
-    ["Credits Cards"]: [
-      { name: "Red Card", value: totalCardRed },
-      { name: "Blue Card", value: totalCardBlue },
-    ],
-    ["Savings & Investments"]: [
-      { name: "Savings", value: savingsBank },
-      { name: "Mortgage", value: savingsMortgage },
-      { name: "Stocks", value: savingsStocks },
-      { name: "Crypto", value: savingsCrypto },
-    ],
-  };
-  };
 
 const emptyData = () => {
   const nodata = "x,xxx.xx";
