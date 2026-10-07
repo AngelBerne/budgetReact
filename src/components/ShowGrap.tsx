@@ -4,7 +4,7 @@ import { Layout } from "../UI/Layout";
 // import { useLocation } from "react-router";
 import SelectorMultipleUI from "../UI/SelectorMultipleUI";
 import { useState } from "react";
-import type { ISummaryHomeData, } from "../provide/hooks/useSummaryTransactions";
+
 
 import { validateSavingDataToShow, type TKEY_SUMMARY } from "../provide/hooks/useSummaryTransactions";
 import { DataShowListCategory } from "../UI/DataShowListCategory";
