@@ -191,14 +191,14 @@ export const BudgetContextProvider = ({ children }: { children: ReactElement }) 
   hasRun.current = true;
 
     dataBaseSubCategories.getSheetData().then((data) => {
-      setSubcategoriesData(data)
+      setSubcategoriesData(data || [])
     })
 
     // setIsLoading(true)
     dataBase.getSheetData().then((data) => {
       
        setIsLoading(false)
-       setTransactionsData(data)
+       setTransactionsData(data || [])
       
       
     
@@ -212,10 +212,10 @@ export const BudgetContextProvider = ({ children }: { children: ReactElement }) 
     const dataMonth = getDataMonthToShow(acumulateMonth[lastMonth]) || {}
  
     
-    if (Object.keys(dataMonth).length > 0) {
-     SummaryData.saveData(acumulateMonth[lastMonth])
+    if (Object.keys(dataMonth).length > 0)
+    {
+      SummaryData.saveData(acumulateMonth[lastMonth])
     }
-      //SummaryData
       
   },[transactionsData,acumulateMonth,lastMonth])
 

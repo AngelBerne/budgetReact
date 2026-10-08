@@ -79,7 +79,7 @@ export class ServiciesLocalTransactions implements IServiciesDB {
 }
 
 export class SummaryData {
-  static saveData(data: any) {
+  static async saveData(data: any) {
     if (!data) return;
     delete data.databyCatefory;
     delete data.monthlyBank;
@@ -90,20 +90,44 @@ export class SummaryData {
     delete data.totalExpenses;
     delete data.totalIncome;
 
-    console.log("SummaryData.saveData--->", data);
+    const myDate =
+      new Date().getDate() +
+      "/" +
+      (new Date().getMonth() + 1) +
+      "/" +
+      new Date().getFullYear();
+
+    const myTime =
+      new Date().getHours() +
+      ":" +
+      new Date().getMinutes() +
+      ":" +
+      new Date().getSeconds();
+
+    const data2 = [
+      {
+        id: "summary" + new Date().getTime(),
+        totalBalance: data.totalBalance,
+        totalCash: data.totalCash,
+        totalCardRed: data.totalCardRed,
+        totalCardBlue: data.totalCardBlue,
+        savingsMortgage: data.savingsMortgage,
+        savingsBank: data.savingsBank,
+        savingsStocks: data.savingsStocks,
+        savingsCrypto: data.savingsCrypto,
+        date: myDate + " " + myTime,
+      },
+    ];
+
     const payload = {
       sheetName: KEY_SERVICES.SUMMARY,
-      data: {
-        data: JSON.stringify(data),
-      },
+      data: data2,
     };
 
-    fetch(settings.url, {
+    await fetch(settings.url, {
       method: "POST",
 
       body: JSON.stringify(payload),
-    }).then((a) => {
-      console.error("data --->>", a);
     });
   }
 }
@@ -165,6 +189,7 @@ export class GoogleSheetsServiciesTransactions implements IServiciesDB {
 
       return dataToReturn;
     } catch (error) {
+      return [];
       console.error("Fetch error:", error);
     }
   }
